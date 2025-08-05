@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Business</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('{{ url_for('static', filename='search_bg.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+
+        /* Logo styles */
+        .logo {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .logo img {
+            height: 140px;
+            width: auto;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 100px auto 40px; /* Push down below logo */
+            background: rgba(0, 0, 0, 0.4); /* Transparent dark box */
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 60%;
+            max-width: 400px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: yellow;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.1); 
+            color: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Logo -->
+<div class="logo">
+    <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
+    </a>
+</div>
+
+<div class="container">
+    <h2>Search for Business</h2>
+    
+    <form method="POST">
+        <input type="text" name="business_name" placeholder="Enter Business Name" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if not_found %}
+    <p class="error">Business not found.</p>
+    {% endif %}
+
+    <form method="GET" action="{{ url_for('create_business') }}">
+        <button type="submit">Create New Business</button>
+    </form>
+
+    <form method="GET" action="{{ url_for('show_all_businesses') }}">
+        <button type="submit">Show All Businesses</button>
+        
+    </form>
+    
+
+    {% if businesses %}
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Business Type</th>
+                <th>Business Name</th>
+                <th>Requirements</th>
+                <th>Position</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in businesses %}
+            <tr>
+                <td>{{ b.username }}</td>
+                <td>{{ b.email }}</td>
+                <td>{{ b.phone_number }}</td>
+                <td>{{ b.business_type }}</td>
+                <td>{{ b.business_name }}</td>
+                <td>{{ b.requirements }}</td>
+                <td>{{ b.position }}</td>
+                <td>{{ b.details }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    
+</div>
+</body>
+</html>

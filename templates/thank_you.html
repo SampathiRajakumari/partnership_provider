@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thank You</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('{{ url_for('static', filename='thank_you_bg.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .logo img {
+            height: 140px;
+            width: auto;
+        }
+
+        .overlay {
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .thank-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            backdrop-filter: blur(6px);
+            text-align: center;
+            width: 400px;
+        }
+
+        .thank-box h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .thank-box p {
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .thank-box a button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .thank-box a button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NexaBiz Logo Top Left -->
+<div class="logo">
+    <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
+    </a>
+</div>
+
+<div class="overlay">
+    <div class="thank-box">
+        <h2>Thank You!</h2>
+        <p>Your request has been submitted successfully.</p>
+        <a href="{{ url_for('home') }}"><button>Go to Home</button></a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home - NexaBiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url('{{ url_for('static', filename='home_bg.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Logo style from login page */
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+
+        .logo img {
+            height: 140px;
+            width: auto;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        ul.menu {
+            list-style-type: none;
+            padding: 0;
+            width: 220px;
+        }
+
+        ul.menu li {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        ul.menu li:hover {
+            background-color: #0056b3;
+        }
+
+        ul.menu li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Logo same as login page -->
+    <div class="logo">
+        <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
+        </a>
+    </div>
+
+    <h1>Welcome to NexaBiz</h1>
+
+    <ul class="menu">
+        <li><a href="{{ url_for('login') }}">User Login</a></li>
+        <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+        <li><a href="{{ url_for('admin_login') }}">Admin Login</a></li>
+    </ul>
+
+</body>
+</html>

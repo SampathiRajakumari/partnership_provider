@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Business Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('{{ url_for('static', filename='business_details_bg.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .logo img {
+            height: 140px;
+            width: auto;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: auto;
+            margin-top: 40px;
+            background: transparent;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .back-button a {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .back-button a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NexaBiz Logo -->
+<div class="logo">
+    <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
+    </a>
+</div>
+
+<div class="container">
+    <h2>Business Details</h2>
+
+    {% if businesses %}
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Business Type</th>
+                <th>Business Name</th>
+                <th>Requirements</th>
+                <th>Position</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in businesses %}
+            <tr>
+                <td>{{ b.username }}</td>
+                <td>{{ b.email }}</td>
+                <td>{{ b.phone_number }}</td>
+                <td>{{ b.business_type }}</td>
+                <td>{{ b.business_name }}</td>
+                <td>{{ b.requirements }}</td>
+                <td>{{ b.position }}</td>
+                <td>{{ b.details }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No business data available.</p>
+    {% endif %}
+
+    <div class="back-button">
+        <a href="{{ url_for('search') }}">Back to Search</a>
+    </div>
+</div>
+</body>
+</html>

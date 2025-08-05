@@ -1,0 +1,108 @@
+/* Common styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    color: #fff;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.65);
+    padding: 30px;
+    border-radius: 12px;
+    margin-top: 100px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Logo styling */
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+.logo img {
+    width: 120px;
+    height: auto;
+}
+
+/* Inputs and buttons */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Page-specific background images */
+.login {
+    background-image: url('login_bg.jpg');
+}
+
+.signup {
+    background-image: url('signup_bg.jpg');
+}
+
+.home {
+    background-image: url('home_bg.jpg');
+}
+
+.create {
+    background-image: url('create_business_bg.jpg');
+}
+
+.my-businesses {
+    background-image: url('my_businesses_bg.jpg');
+}
+
+.search {
+    background-image: url('search_bg.jpg');
+}
+
+.details {
+    background-image: url('business_details_bg.jpg');
+}
+
+.contact {
+    background-image: url('contact_bg.jpg');
+}
+
+.thank-you {
+    background-image: url('thank_you_bg.jpg');
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container {
+        margin: 40px 20px;
+        padding: 20px;
+    }
+
+    .logo img {
+        width: 90px;
+    }
+}
