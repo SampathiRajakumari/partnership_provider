@@ -237,9 +237,10 @@ def my_businesses():
     is_admin = session.get('is_admin', False)
     return render_template('my_businesses.html', businesses=businesses, is_admin=is_admin)
 
-# ---------- RUN ----------
-import os
+# ---------- RUN --
 
+#=======
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
-
+    
+#>>>>>>> 96e3e14 (Add Flask and dependencies to requirements.txt)
