@@ -1,9 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
+import razorpay   # 🔹 Razorpay added
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
+
+# ---------- RAZORPAY SETUP ----------
+RAZORPAY_KEY_ID = "your_key_id"          # Replace with your Razorpay Key ID
+RAZORPAY_KEY_SECRET = "your_key_secret"  # Replace with your Razorpay Key Secret
+
+razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
 # ---------- INIT DATABASE ----------
 def init_db():
@@ -162,12 +169,25 @@ def search():
 
     return render_template('search.html', businesses=businesses, not_found=not_found)
 
-@app.route('/contact', methods=['GET', 'POST'])
-def contact():
-    business = session.get('latest_business', None)
-    if request.method == 'POST':
-        return redirect(url_for('thank_you'))
-    return render_template('contact.html', business=business)
+# ---------- PAYMENT ROUTES ----------
+@app.route("/pay/<int:business_id>")
+def pay(business_id):
+    order = razorpay_client.order.create(dict(
+        amount=5000,  # 50 INR = 5000 paise
+        currency="INR",
+        payment_capture="1"
+    ))
+    return render_template("pay.html", order=order, business_id=business_id, key_id=RAZORPAY_KEY_ID)
+
+@app.route("/unlock/<int:business_id>")
+def unlock(business_id):
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute("SELECT * FROM businesses WHERE id=?", (business_id,))
+    business = dict(c.fetchone())
+    conn.close()
+    return render_template("contact.html", business=business)
 
 @app.route('/thank-you')
 def thank_you():
@@ -237,10 +257,6 @@ def my_businesses():
     is_admin = session.get('is_admin', False)
     return render_template('my_businesses.html', businesses=businesses, is_admin=is_admin)
 
-# ---------- RUN --
-
-#=======
+# ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
-    
-#>>>>>>> 96e3e14 (Add Flask and dependencies to requirements.txt)

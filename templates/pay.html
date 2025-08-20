@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Pay ₹50 to View Contact Details</h2>
+    <button id="rzp-button">Pay Now</button>
+
+    <script>
+        var options = {
+            "key": "{{ key_id }}",
+            "amount": "{{ payment.amount }}",
+            "currency": "INR",
+            "name": "Business Contact Access",
+            "description": "Unlock email & phone",
+            "order_id": "{{ payment.id }}",
+            
+            "handler": function (response){
+                window.location.href = "/unlock/{{ business_id }}";
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        document.getElementById('rzp-button').onclick = function(e){
+            rzp1.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+</html>
