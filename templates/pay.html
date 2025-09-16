@@ -1,31 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Payment</title>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <title>Pay with QR Code</title>
+    <script>
+        function enableButton() {
+            document.getElementById("paidBtn").disabled = false;
+        }
+    </script>
 </head>
 <body>
-    <h2>Pay ₹50 to View Contact Details</h2>
-    <button id="rzp-button">Pay Now</button>
+    <h2>Scan & Pay</h2>
+    <h2>₹100 – Registration Fee for New Business</h2>
+    <img src="{{ url_for('static', filename='QRcode.jpg') }}" alt="QR Code" width="250">
+    
+    <p>After scanning, wait 30 seconds before confirming:</p>
+    <button id="paidBtn" disabled onclick="document.getElementById('paidForm').submit();">I Have Paid</button>
+    
+    <form id="paidForm" action="{{ url_for('payment_success') }}" method="post"></form>
 
     <script>
-        var options = {
-            "key": "{{ key_id }}",
-            "amount": "{{ payment.amount }}",
-            "currency": "INR",
-            "name": "Business Contact Access",
-            "description": "Unlock email & phone",
-            "order_id": "{{ payment.id }}",
-            
-            "handler": function (response){
-                window.location.href = "/unlock/{{ business_id }}";
-            }
-        };
-        var rzp1 = new Razorpay(options);
-        document.getElementById('rzp-button').onclick = function(e){
-            rzp1.open();
-            e.preventDefault();
-        }
+        // Enable after 30 sec (fake wait, still not secure but better UX)
+        setTimeout(enableButton, 30000);
     </script>
 </body>
 </html>
