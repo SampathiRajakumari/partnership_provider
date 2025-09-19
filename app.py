@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
-import qrcode
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -42,6 +41,7 @@ init_db()
 def home():
     return render_template('home.html')
 
+# ---------------- USER AUTH ----------------
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -54,7 +54,7 @@ def signup():
         c.execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', (username, email, password))
         conn.commit()
         conn.close()
-        flash("✅ Signup successful! Please login.", "success")
+        flash("Signup successful. Please login.", "success")
         return redirect(url_for('login'))
     return render_template('signup.html')
 
@@ -73,10 +73,10 @@ def login():
         if user:
             session['username'] = username
             session['is_admin'] = False
-            flash(f"Welcome {username}!", "success")
+            flash("Login successful.", "success")
             return redirect(url_for('search'))
         else:
-            flash("Invalid credentials.", "error")
+            flash("Invalid credentials", "error")
     return render_template('login.html')
 
 @app.route('/logout')
@@ -85,52 +85,59 @@ def logout():
     flash("Logged out successfully.", "success")
     return redirect(url_for('home'))
 
-# ---------- PAYMENT FLOW ----------
+# ---------------- ADMIN ----------------
+@app.route('/admin-login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username == "Rajakumari" and password == "#Rajakumari2004":
+            session['username'] = username
+            session['is_admin'] = True
+            flash("Welcome, Admin!", "success")
+            return redirect(url_for('show_all_businesses'))
+        else:
+            flash("Invalid admin credentials", "error")
+    return render_template('admin_login.html')
+
+@app.route('/admin-logout')
+def admin_logout():
+    session.pop('username', None)
+    session.pop('is_admin', None)
+    flash("Admin logged out.", "success")
+    return redirect(url_for('home'))
+
+# ---------------- BUSINESS & PAYMENT ----------------
 @app.route('/start-business')
 def start_business():
     if 'username' not in session:
-        flash("Please login first.", "error")
         return redirect(url_for('login'))
-
     amount = 100  # registration fee
     return redirect(url_for('upi_pay', amount=amount))
 
 @app.route('/upi-pay')
 def upi_pay():
     if 'username' not in session:
-        flash("Please login first.", "error")
         return redirect(url_for('login'))
-
     amount = request.args.get('amount', 50)  # default ₹50
-    upi_id = "sampathirajakumari@oksbi"
-    upi_name = "Sampathi Rajakumari"
-
-    # Generate UPI link
-    upi_link = f"upi://pay?pa={upi_id}&pn={upi_name.replace(' ', '%20')}&am={amount}&tn=Business%20Registration&cu=INR"
-
-    # Generate QR code
-    if not os.path.exists('static'):
-        os.makedirs('static')
-    qr_img_path = os.path.join('static', 'qrcode.jpg')
-    qr = qrcode.QRCode(version=1, box_size=10, border=4)
-    qr.add_data(upi_link)
-    qr.make(fit=True)
-    img = qr.make_image(fill='black', back_color='white')
-    img.save(qr_img_path)
-
+    upi_link = (
+        f"upi://pay?pa=sampathirajakumari@oksbi"
+        f"&pn=Sampathi%20Rajakumari"
+        f"&am={amount}"
+        f"&tn=Business%20Registration"
+        f"&cu=INR"
+    )
     return render_template('pay.html', upi_link=upi_link, amount=amount)
 
-@app.route('/payment_success', methods=["POST"])
+@app.route('/payment-success', methods=["POST"])
 def payment_success():
     session['paid'] = True
     flash("✅ Payment confirmed. You can now create your business.", "success")
     return redirect(url_for('create_business'))
 
-# ---------- CREATE BUSINESS ----------
 @app.route('/create-business', methods=['GET', 'POST'])
 def create_business():
     if 'username' not in session:
-        flash("Please login first.", "error")
         return redirect(url_for('login'))
 
     if 'paid' not in session:
@@ -162,7 +169,7 @@ def create_business():
 
     return render_template('create_business.html')
 
-# ---------- SEARCH ----------
+# ---------------- SEARCH ----------------
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     businesses = []
@@ -196,13 +203,50 @@ def search():
 
     return render_template('search.html', businesses=businesses, not_found=not_found)
 
-# ---------- THANK YOU ----------
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    business = session.get('latest_business', None)
+    if request.method == 'POST':
+        flash("Message sent successfully!", "success")
+        return redirect(url_for('thank_you'))
+    return render_template('contact.html', business=business)
+
 @app.route('/thank-you')
 def thank_you():
     return render_template('thank_you.html')
 
-# ---------- RUN ----------
+# ---------------- ADMIN BUSINESS MANAGEMENT ----------------
+@app.route('/all-businesses')
+def show_all_businesses():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute('SELECT * FROM businesses')
+    rows = c.fetchall()
+    conn.close()
+    businesses = [dict(row) for row in rows]
+    return render_template('my_businesses.html', businesses=businesses, is_admin=session.get('is_admin', False))
+
+@app.route('/delete-business/<int:business_id>')
+def delete_business(business_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    if session.get('is_admin'):
+        c.execute('DELETE FROM businesses WHERE id = ?', (business_id,))
+    else:
+        c.execute('DELETE FROM businesses WHERE id = ? AND username = ?', (business_id, session['username']))
+    conn.commit()
+    conn.close()
+    flash("Business deleted successfully.", "success")
+    return redirect(url_for('show_all_businesses'))
+
+# ---------------- RUN SERVER ----------------
 if __name__ == "__main__":
-    if not os.path.exists('static'):
-        os.makedirs('static')
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
