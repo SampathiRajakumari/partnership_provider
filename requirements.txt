@@ -6,3 +6,4 @@ itsdangerous==2.1.2
 click==8.1.3
 razorpay==1.4.2
 setuptools
+qrcode[pil]
