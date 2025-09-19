@@ -1,36 +1,17 @@
-<!DOCTYPE html>
+<!-- Save as upi_pay.html and open on mobile browser -->
+<!doctype html>
 <html>
-<head>
-    <title>Pay with QR Code</title>
-    <script>
-        function enableButton() {
-            document.getElementById("paidBtn").disabled = false;
-        }
-    </script>
-</head>
-<body>
-    <h2>Scan & Pay</h2>
-    <h2>₹100 – Registration Fee for New Business</h2>
-
-    <!-- QR Code Image -->
-    <img src="{{ url_for('static', filename='QRcode.jpg') }}" alt="QR Code" width="250">
-
-    <!-- OR Direct Clickable Link -->
-    <p>OR</p>
-    <a href="upi://pay?pa=sampathirajakumari@oksbi&pn=Sampathi%20rajakumari&aid=uGICAgIC_oLjKWg" 
-       style="display:inline-block; background-color:#007BFF; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; font-size:16px;" 
-       target="_blank">
-        💰 Click Here to Pay via UPI
-    </a>
-
-    <p>After scanning or clicking, wait 30 seconds before confirming:</p>
-    <button id="paidBtn" disabled onclick="document.getElementById('paidForm').submit();">I Have Paid</button>
-    
-    <form id="paidForm" action="{{ url_for('payment_success') }}" method="post"></form>
+  <head><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+  <body>
+    <h3>Pay with UPI</h3>
+    <a id="payBtn" href="#" onclick="payUPI()">Pay ₹50</a>
 
     <script>
-        // Enable after 30 sec (fake wait, still not secure but better UX)
-        setTimeout(enableButton, 30000);
+      function payUPI(){
+        const upi = encodeURI("upi://pay?pa=7207121020@axl&pn=Sampathi Rajakumari&am=50&tn=Payment%20test&cu=INR");
+        // Try opening the UPI link
+        window.location.href = upi;
+      }
     </script>
-</body>
+  </body>
 </html>

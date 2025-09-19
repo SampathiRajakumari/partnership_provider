@@ -124,7 +124,8 @@ def start_business():
         return redirect(url_for('login'))
 
     # Dynamic UPI link from backend
-    upi_link = "upi://pay?pa=sampathirajakumari@oksbi&pn=Sampathi%20rajakumari&aid=uGICAgIC_oLjKWg"
+    upi://pay?pa=7207121020@axl&pn=Sampathi%20Rajakumari&am=50&tn=Payment%20for%20order&cu=INR
+
     amount = 100
 
     return render_template("pay.html", upi_link=upi_link, amount=amount)
