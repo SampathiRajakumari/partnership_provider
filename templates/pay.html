@@ -11,9 +11,19 @@
 <body>
     <h2>Scan & Pay</h2>
     <h2>₹100 – Registration Fee for New Business</h2>
+
+    <!-- QR Code Image -->
     <img src="{{ url_for('static', filename='QRcode.jpg') }}" alt="QR Code" width="250">
-    
-    <p>After scanning, wait 30 seconds before confirming:</p>
+
+    <!-- OR Direct Clickable Link -->
+    <p>OR</p>
+    <a href="upi://pay?pa=sampathirajakumari@oksbi&pn=Sampathi%20rajakumari&aid=uGICAgIC_oLjKWg" 
+       style="display:inline-block; background-color:#007BFF; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; font-size:16px;" 
+       target="_blank">
+        💰 Click Here to Pay via UPI
+    </a>
+
+    <p>After scanning or clicking, wait 30 seconds before confirming:</p>
     <button id="paidBtn" disabled onclick="document.getElementById('paidForm').submit();">I Have Paid</button>
     
     <form id="paidForm" action="{{ url_for('payment_success') }}" method="post"></form>

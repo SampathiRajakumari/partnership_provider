@@ -123,8 +123,12 @@ def start_business():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # Just show the QR page instead of Razorpay popup
-    return render_template("pay.html")
+    # Dynamic UPI link from backend
+    upi_link = "upi://pay?pa=sampathirajakumari@oksbi&pn=Sampathi%20rajakumari&aid=uGICAgIC_oLjKWg"
+    amount = 100
+
+    return render_template("pay.html", upi_link=upi_link, amount=amount)
+
 
 
 @app.route('/payment_success', methods=["POST"])
