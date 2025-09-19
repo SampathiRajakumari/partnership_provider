@@ -130,7 +130,7 @@ def upi_pay():
         f"&tn=Business%20Registration"
         f"&cu=INR"
     )
-    return render_template('upi_pay.html', upi_link=upi_link, amount=amount)
+    return render_template('pay.html', upi_link=upi_link, amount=amount)
 
 @app.route('/payment_success', methods=["POST"])
 def payment_success():
