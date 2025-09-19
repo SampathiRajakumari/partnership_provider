@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
 import razorpay
@@ -7,12 +7,10 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # ---------- RAZORPAY SETUP ----------
-# ---------- RAZORPAY SETUP ----------
 RAZORPAY_KEY_ID = "rzp_test_xxxxxxxxx"        # from Razorpay Dashboard
 RAZORPAY_KEY_SECRET = "xxxxxxxxxxxxxxxx"      # from Razorpay Dashboard
 
 razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
-
 
 # ---------- INIT DATABASE ----------
 def init_db():
@@ -45,12 +43,10 @@ def init_db():
 
 init_db()
 
-
 # ---------- ROUTES ----------
 @app.route('/')
 def home():
     return render_template('home.html')
-
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -66,7 +62,6 @@ def signup():
         conn.close()
         return redirect(url_for('login'))
     return render_template('signup.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -88,7 +83,6 @@ def login():
             return render_template('login.html', error="Invalid credentials")
     return render_template('login.html')
 
-
 @app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
@@ -103,19 +97,16 @@ def admin_login():
             flash('Invalid admin credentials', 'error')
     return render_template('admin_login.html')
 
-
 @app.route('/admin_logout')
 def admin_logout():
     session.pop('username', None)
     session.pop('is_admin', None)
     return redirect(url_for('home'))
 
-
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('home'))
-
 
 # ---------- PAYMENT FLOW ----------
 @app.route('/start-business')
@@ -123,22 +114,29 @@ def start_business():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # Dynamic UPI link from backend
-    upi://pay?pa=7207121020@axl&pn=Sampathi%20Rajakumari&am=50&tn=Payment%20for%20order&cu=INR
+    amount = 100  # registration fee
+    return redirect(url_for('upi_pay', amount=amount))
 
-    amount = 100
+@app.route('/upi-pay')
+def upi_pay():
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
-    return render_template("pay.html", upi_link=upi_link, amount=amount)
-
-
+    amount = request.args.get('amount', 50)  # default ₹50
+    upi_link = (
+        f"upi://pay?pa=7207121020@axl"
+        f"&pn=Sampathi%20Rajakumari"
+        f"&am={amount}"
+        f"&tn=Business%20Registration"
+        f"&cu=INR"
+    )
+    return render_template('upi_pay.html', upi_link=upi_link, amount=amount)
 
 @app.route('/payment_success', methods=["POST"])
 def payment_success():
-    session['paid'] = True   # mark user as paid
-    flash("✅ Payment confirmed (manual). You can now create your business.", "success")
+    session['paid'] = True
+    flash("✅ Payment confirmed. You can now create your business.", "success")
     return redirect(url_for('create_business'))
-
-
 
 @app.route('/create-business', methods=['GET', 'POST'])
 def create_business():
@@ -174,13 +172,11 @@ def create_business():
 
     return render_template('create_business.html')
 
-
-# ---------- OTHER ROUTES ----------
+# ---------- SEARCH ----------
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     businesses = []
     not_found = False
-
     if request.method == 'POST':
         business_name = request.form.get('business_name', '').strip().lower()
         business_type = request.form.get('business_type', '').strip().lower()
@@ -210,7 +206,7 @@ def search():
 
     return render_template('search.html', businesses=businesses, not_found=not_found)
 
-
+# ---------- CONTACT ----------
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     business = session.get('latest_business', None)
@@ -218,12 +214,11 @@ def contact():
         return redirect(url_for('thank_you'))
     return render_template('contact.html', business=business)
 
-
 @app.route('/thank-you')
 def thank_you():
     return render_template('thank_you.html')
 
-
+# ---------- ADMIN & BUSINESS MANAGEMENT ----------
 @app.route('/all-businesses')
 def show_all_businesses():
     conn = sqlite3.connect('database.db')
@@ -232,10 +227,8 @@ def show_all_businesses():
     c.execute('SELECT * FROM businesses')
     rows = c.fetchall()
     conn.close()
-
     businesses = [dict(row) for row in rows]
     return render_template('my_businesses.html', businesses=businesses, is_admin=session.get('is_admin', False))
-
 
 @app.route('/confirm-delete/<int:business_id>', methods=['GET', 'POST'])
 def confirm_delete(business_id):
@@ -261,7 +254,6 @@ def confirm_delete(business_id):
 
     return render_template('confirm_delete.html')
 
-
 @app.route('/delete-business/<int:business_id>', methods=['GET','POST'])
 def delete_business(business_id):
     if 'username' not in session:
@@ -280,7 +272,6 @@ def delete_business(business_id):
 
     return redirect(url_for('show_all_businesses'))
 
-
 @app.route('/my_businesses')
 def my_businesses():
     conn = sqlite3.connect('database.db')
@@ -290,7 +281,6 @@ def my_businesses():
     conn.close()
     is_admin = session.get('is_admin', False)
     return render_template('my_businesses.html', businesses=businesses, is_admin=is_admin)
-
 
 # ---------- RUN ----------
 if __name__ == "__main__":

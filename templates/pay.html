@@ -1,15 +1,17 @@
-<!-- Save as upi_pay.html and open on mobile browser -->
 <!doctype html>
 <html>
-  <head><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>UPI Payment</title>
+  </head>
   <body>
     <h3>Pay with UPI</h3>
-    <a id="payBtn" href="#" onclick="payUPI()">Pay ₹50</a>
+    <p>Amount: ₹{{ amount }}</p>
+    <a id="payBtn" href="#" onclick="payUPI()">Pay ₹{{ amount }}</a>
 
     <script>
       function payUPI(){
-        const upi = encodeURI("upi://pay?pa=7207121020@axl&pn=Sampathi Rajakumari&am=50&tn=Payment%20test&cu=INR");
-        // Try opening the UPI link
+        const upi = encodeURI("{{ upi_link }}");
         window.location.href = upi;
       }
     </script>
