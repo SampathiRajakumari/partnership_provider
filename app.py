@@ -284,5 +284,6 @@ def my_businesses():
 
 # ---------- RUN ----------
 if __name__ == "__main__":
-     port = int(os.environ.get("PORT", 5000))  # fallback for local dev
-     app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)  # <-- debug=True
+
