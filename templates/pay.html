@@ -46,6 +46,20 @@
       background: #45a049;
     }
   </style>
+  <script>
+    async function confirmPayment() {
+      // This simulates a payment success
+      const response = await fetch("{{ url_for('payment_success') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ razorpay_payment_id: "SIMULATED_PAYMENT_ID" })
+      });
+      const result = await response.json();
+      if (result.status === "ok") {
+        window.location.href = "{{ url_for('create_business') }}";
+      }
+    }
+  </script>
 </head>
 <body>
   <div class="card">
@@ -54,9 +68,7 @@
     <p>Scan this QR code to complete your payment:</p>
     <img src="{{ url_for('static', filename='QRcode.jpg') }}" alt="UPI QR Code" class="qr">
     <p class="note">After payment, click "I have paid" to continue.</p>
-    <form action="{{ url_for('payment_success') }}" method="POST">
-      <button type="submit">✅ I have paid</button>
-    </form>
+    <button onclick="confirmPayment()">✅ I have paid</button>
   </div>
 </body>
 </html>
