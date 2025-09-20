@@ -52,7 +52,7 @@
     <h3>Pay with UPI</h3>
     <p>Amount: ₹{{ amount }}</p>
     <p>Scan this QR code to complete your payment:</p>
-    <img src="{{ url_for('static', filename='qrcode.jpg') }}" alt="UPI QR Code" class="qr">
+    <img src="{{ url_for('static', filename='QRcode.jpg') }}" alt="UPI QR Code" class="qr">
     <p class="note">After payment, click "I have paid" to continue.</p>
     <form action="{{ url_for('payment_success') }}" method="POST">
       <button type="submit">✅ I have paid</button>
