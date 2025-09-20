@@ -4,27 +4,59 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>UPI Payment</title>
   <style>
-    body { text-align:center; font-family:Arial,sans-serif; padding-top:50px; background-color:#f2f2f2; }
-    .card { display:inline-block; background:rgba(0,0,0,0.7); padding:30px; border-radius:15px; color:white; }
-    a#payBtn { display:inline-block; margin-top:20px; padding:15px 30px; background:#4CAF50; color:white; text-decoration:none; font-size:18px; border-radius:8px; }
-    a#payBtn:hover { background:#45a049; }
-    img.qr { width:200px; margin-top:20px; border-radius:10px; box-shadow:0 0 10px black; }
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding-top: 50px;
+      background: url("{{ url_for('static', filename='contact_bg.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+    }
+    .card {
+      display: inline-block;
+      background: rgba(0,0,0,0.75);
+      padding: 30px;
+      border-radius: 15px;
+      color: white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+    img.qr {
+      width: 220px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px black;
+    }
+    .note {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #ddd;
+    }
+    button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      background: #4CAF50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #45a049;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h3>Pay with UPI</h3>
     <p>Amount: ₹{{ amount }}</p>
-    <a id="payBtn" href="#" onclick="payUPI()">Pay ₹{{ amount }}</a>
-    <p>Or scan the QR code below:</p>
+    <p>Scan this QR code to complete your payment:</p>
     <img src="{{ url_for('static', filename='qrcode.jpg') }}" alt="UPI QR Code" class="qr">
+    <p class="note">After payment, click "I have paid" to continue.</p>
+    <form action="{{ url_for('payment_success') }}" method="POST">
+      <button type="submit">✅ I have paid</button>
+    </form>
   </div>
-
-  <script>
-    function payUPI(){
-      const upi = encodeURI("{{ upi_link }}");
-      window.location.href = upi;
-    }
-  </script>
 </body>
 </html>
