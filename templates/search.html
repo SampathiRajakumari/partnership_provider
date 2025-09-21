@@ -15,37 +15,17 @@
             font-family: Arial, sans-serif;
             color: #fff;
         }
-
-        /* Logo styles */
-        .logo {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .logo img {
-            height: 140px;
-            width: auto;
-        }
-
+        .logo { position: absolute; top: 15px; left: 20px; z-index: 1000; }
+        .logo img { height: 140px; width: auto; }
         .container {
             padding: 20px;
             max-width: 900px;
-            margin: 100px auto 40px; /* Push down below logo */
-            background: rgba(0, 0, 0, 0.4); /* Transparent dark box */
+            margin: 100px auto 40px;
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 10px;
         }
-
-        h2 {
-            text-align: center;
-        }
-
-        form {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
+        h2 { text-align: center; }
+        form { margin-bottom: 20px; text-align: center; }
         input[type="text"] {
             padding: 10px;
             width: 60%;
@@ -54,7 +34,6 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
-
         button {
             padding: 10px 20px;
             background-color: #007BFF;
@@ -64,44 +43,21 @@
             cursor: pointer;
             margin-top: 10px;
         }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .error {
-            color: yellow;
-            text-align: center;
-            font-weight: bold;
-        }
-
+        button:hover { background-color: #0056b3; }
+        .error { color: yellow; text-align: center; font-weight: bold; }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.1); 
+            background-color: rgba(255, 255, 255, 0.1);
             color: white;
         }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #0056b3;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #0056b3; color: white; }
+        tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.05); }
     </style>
 </head>
 <body>
-
-<!-- Logo -->
 <div class="logo">
     <a href="{{ url_for('home') }}">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
@@ -117,18 +73,16 @@
     </form>
 
     {% if not_found %}
-    <p class="error">Business not found.</p>
+        <p class="error">Business not found.</p>
     {% endif %}
 
-    <form method="GET" action="{{ url_for('create_business') }}">
+    <form method="GET" action="{{ url_for('start_business') }}">
         <button type="submit">Create New Business</button>
     </form>
 
     <form method="GET" action="{{ url_for('show_all_businesses') }}">
         <button type="submit">Show All Businesses</button>
-        
     </form>
-    
 
     {% if businesses %}
     <table>
@@ -160,7 +114,6 @@
         </tbody>
     </table>
     {% endif %}
-    
 </div>
 </body>
 </html>

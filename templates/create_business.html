@@ -6,85 +6,29 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-image: url('{{ url_for('static', filename='create_business_bg.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
-            font-family: Arial, sans-serif;
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            height: 100vh; font-family: Arial, sans-serif;
         }
-
-        .logo {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .logo img {
-            height: 140px;
-            width: auto;
-        }
-
-        .overlay {
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-y: auto;
-        }
-
+        .logo { position: absolute; top: 15px; left: 20px; z-index: 1000; }
+        .logo img { height: 140px; width: auto; }
+        .overlay { height: 100vh; background-color: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; overflow-y: auto; }
         .form-container {
-            background-color: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            padding: 40px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
-            color: white;
-            margin-top: 100px; /* push down below logo */
+            background-color: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+            padding: 40px; border-radius: 10px; width: 90%; max-width: 600px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.3); color: white; margin-top: 100px;
         }
-
-        .form-container h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: white;
+        .form-container h2 { text-align: center; margin-bottom: 25px; color: white; }
+        .form-container input, .form-container textarea, .form-container button {
+            width: 100%; padding: 10px; margin-bottom: 15px; font-size: 16px; border-radius: 5px; border: none;
         }
-
-        .form-container input,
-        .form-container textarea,
-        .form-container button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        .form-container textarea {
-            resize: vertical;
-        }
-
-        .form-container button {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .form-container button:hover {
-            background-color: #0056b3;
-        }
+        .form-container textarea { resize: vertical; }
+        .form-container button { background-color: #007bff; color: white; font-weight: bold; cursor: pointer; }
+        .form-container button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
-
-<!-- Logo -->
 <div class="logo">
     <a href="{{ url_for('home') }}">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
@@ -107,6 +51,5 @@
         </form>
     </div>
 </div>
-
 </body>
 </html>
