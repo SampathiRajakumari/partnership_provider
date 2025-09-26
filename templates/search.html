@@ -19,7 +19,7 @@
         .logo img { height: 140px; width: auto; }
         .container {
             padding: 20px;
-            max-width: 900px;
+            max-width: 1000px;
             margin: 100px auto 40px;
             background: rgba(0, 0, 0, 0.4);
             border-radius: 10px;
@@ -55,6 +55,15 @@
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
         th { background-color: #0056b3; color: white; }
         tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.05); }
+        .btn {
+            padding: 5px 10px;
+            background: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover { background: #1e7e34; }
     </style>
 </head>
 <body>
@@ -85,33 +94,40 @@
     </form>
 
     {% if businesses %}
-    <table>
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Business Type</th>
-                <th>Business Name</th>
-                <th>Requirements</th>
-                <th>Position</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for b in businesses %}
-            <tr>
-                <td>{{ b.username }}</td>
-                <td>{{ b.email }}</td>
-                <td>{{ b.phone_number }}</td>
-                <td>{{ b.business_type }}</td>
-                <td>{{ b.business_name }}</td>
-                <td>{{ b.requirements }}</td>
-                <td>{{ b.position }}</td>
-                <td>{{ b.details }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    <table class="table table-bordered">
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Business Type</th>
+        <th>Business Name</th>
+        <th>Requirements</th>
+        <th>Position</th>
+        <th>Details</th>
+        <th>Chat</th>
+      </tr>
+      {% for business in businesses %}
+      <tr>
+        <td>{{ business.username }}</td>
+        <td>{{ business.email }}</td>
+        <td>{{ business.phone_number }}</td>
+        <td>{{ business.business_type }}</td>
+        <td>{{ business.business_name }}</td>
+        <td>{{ business.requirements }}</td>
+        <td>{{ business.position }}</td>
+        <td>{{ business.details }}</td>
+        <td>
+          {% if business.username != session['username'] %}
+          <a href="https://wa.me/91{{ business.phone_number }}?text=Hi%20{{ business.username }},%20I%20am%20also%20into%20{{ business.business_type }}.%20Let's%20discuss%20our%20business!" 
+             target="_blank" class="btn">
+             💬 Chat
+          </a>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
     </table>
     {% endif %}
 </div>
