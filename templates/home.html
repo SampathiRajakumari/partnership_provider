@@ -4,6 +4,7 @@
     <title>Home - NexaBiz</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        /* General body styling */
         body {
             background-image: url('{{ url_for('static', filename='home_bg.jpg') }}');
             background-size: cover;
@@ -12,14 +13,14 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
         }
 
-        /* Logo style from login page */
+        /* Logo styling */
         .logo {
             position: absolute;
             top: 10px;
@@ -32,12 +33,34 @@
             width: auto;
         }
 
+        /* Top-right menu styling */
+        .top-menu {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .top-menu a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .top-menu a:hover {
+            text-decoration: underline;
+        }
+
+        /* Heading styling */
         h1 {
             color: white;
             margin-bottom: 30px;
             text-shadow: 2px 2px 4px #000;
         }
 
+        /* Menu buttons styling */
         ul.menu {
             list-style-type: none;
             padding: 0;
@@ -64,15 +87,72 @@
             text-decoration: none;
             display: block;
         }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            color: black; /* Ensures all modal text is black */
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content a {
+            color: #0ea5a4;
+            text-decoration: none;
+        }
+
+        .modal-content a:hover {
+            text-decoration: underline;
+        }
+
+        .close {
+            color: #000;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: red;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Logo same as login page -->
+    <!-- Logo -->
     <div class="logo">
         <a href="{{ url_for('home') }}">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
         </a>
+    </div>
+
+    <!-- Top-right About & Contact -->
+    <div class="top-menu">
+        <a href="#" onclick="openModal('aboutModal')">About</a>
+        <a href="#" onclick="openModal('contactModal')">Contact</a>
     </div>
 
     <h1>Welcome to NexaBiz</h1>
@@ -82,6 +162,38 @@
         <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
         <li><a href="{{ url_for('admin_login') }}">Admin Login</a></li>
     </ul>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('aboutModal')">&times;</span>
+            <h2>About NexaBiz</h2>
+            <p>NexaBiz is a smart platform built to connect businesses, entrepreneurs, and service providers in one place. Our mission is to empower businesses with growth opportunities through trusted connections, innovative solutions, and easy networking.</p>
+            <p>Website: <a href="https://nexabiz.in" target="_blank">nexabiz.in</a></p>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('contactModal')">&times;</span>
+            <h2>Contact Us</h2>
+            <p><strong>Name:</strong> Sampathi Rajakumari</p>
+            <p><strong>Phone:</strong> +91 72071 21020</p>
+            <p><strong>Email:</strong> <a href="mailto:nexabiz.27@gmail.com">nexabiz.27@gmail.com</a></p>
+            <p><strong>Website:</strong> <a href="https://nexabiz.in" target="_blank">nexabiz.in</a></p>
+            <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/rajakumari-sampathi-6481ba2a0/" target="_blank">🔗 View Profile</a></p>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) { document.getElementById(id).style.display = "block"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+        window.onclick = function(event) {
+            if(event.target === document.getElementById('aboutModal')) closeModal('aboutModal');
+            if(event.target === document.getElementById('contactModal')) closeModal('contactModal');
+        }
+    </script>
 
 </body>
 </html>
