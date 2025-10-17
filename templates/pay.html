@@ -6,9 +6,10 @@
     body { text-align: center; font-family: Arial, sans-serif; padding-top: 50px; background: #f1f1f1; }
     .card { display: inline-block; background: #333; padding: 30px; border-radius: 15px; color: white; }
     img.qr { width: 220px; margin-top: 20px; border-radius: 10px; }
-    button { margin-top: 15px; padding: 12px 25px; border: none; border-radius: 8px; background: #4CAF50; color: white; font-size: 16px; cursor: not-allowed; opacity: 0.6; }
+    button { margin-top: 15px; padding: 12px 25px; border: none; border-radius: 8px; background: #4CAF50; color: white; font-size: 16px; cursor: not-allowed; opacity: 0.6; transition: 0.3s; }
     button.enabled { cursor: pointer; opacity: 1; }
     .note { margin-top: 10px; font-size: 14px; color: #ddd; }
+    a.upi-link { color: yellow; display: block; margin-top: 15px; font-size: 15px; text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -17,13 +18,22 @@
     <p>Amount: ₹{{ amount }}</p>
     <p>Scan this QR code to complete your payment:</p>
     <img src="{{ url_for('static', filename='QRcode.jpg') }}" alt="UPI QR Code" class="qr">
-    <p class="note" id="note">Please scan the QR code first.</p>
+
+    <!-- ✅ Direct UPI payment link (opens UPI app on mobile) -->
+    <a href="upi://pay?pa=7207121020@axl&pn=Your%20Business&am={{ amount }}&cu=INR"
+       class="upi-link">
+       💰 Tap here to pay using UPI App
+    </a>
+
+    <p class="note" id="note">Please scan the QR code or tap the link to pay.</p>
+
     <form action="{{ url_for('payment_success') }}" method="POST">
       <button type="submit" id="pay-button" disabled>✅ I have paid</button>
     </form>
   </div>
 
   <script>
+    // Enable button after 30 seconds (adjust if needed)
     setTimeout(function() {
       var btn = document.getElementById("pay-button");
       btn.disabled = false;
