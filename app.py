@@ -138,9 +138,7 @@ def upi_pay():
     if 'username' not in session:
         return redirect(url_for('login'))
     amount = request.args.get('amount', 50)
-    upi_link = f"upi://pay?pa=sampathirajakumari@oksbi&pn=NexaBiz&am={amount}&cu=INR"
-    return render_template('pay.html', amount=amount, upi_link=upi_link)
-
+    return render_template('pay.html', amount=amount)
 
 @app.route('/payment_success', methods=["POST"])
 def payment_success():
