@@ -1,17 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
-import razorpay
 from datetime import datetime
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-
-# ---------- RAZORPAY SETUP ----------
-RAZORPAY_KEY_ID = "rzp_test_xxxxxxxxx"
-RAZORPAY_KEY_SECRET = "xxxxxxxxxxxxxxxx"
-razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
 # ---------- UPLOAD FOLDER ----------
 UPLOAD_FOLDER = "static/voices"
@@ -64,7 +58,7 @@ init_db()
 def home():
     return render_template('home.html')
 
-# ----- SIGNUP -----
+# ---------- SIGNUP ----------
 @app.route('/signup', methods=['GET','POST'])
 def signup():
     if request.method == 'POST':
@@ -76,10 +70,11 @@ def signup():
         c.execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', (username, email, password))
         conn.commit()
         conn.close()
+        flash("Signup successful! Please login.", "success")
         return redirect(url_for('login'))
     return render_template('signup.html')
 
-# ----- LOGIN -----
+# ---------- LOGIN ----------
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
@@ -95,10 +90,10 @@ def login():
             session['is_admin'] = False
             return redirect(url_for('search'))
         else:
-            return render_template('login.html', error="Invalid credentials")
+            flash("Invalid credentials", "error")
     return render_template('login.html')
 
-# ----- ADMIN LOGIN -----
+# ---------- ADMIN LOGIN ----------
 @app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
@@ -119,7 +114,7 @@ def admin_logout():
     session.pop('is_admin', None)
     return redirect(url_for('home'))
 
-# ----- LOGOUT -----
+# ---------- LOGOUT ----------
 @app.route('/logout')
 def logout():
     session.clear()
@@ -130,7 +125,7 @@ def logout():
 def start_business():
     if 'username' not in session:
         return redirect(url_for('login'))
-    amount = 100
+    amount = 100   # 💰 amount in INR
     return redirect(url_for('upi_pay', amount=amount))
 
 @app.route('/pay')
@@ -146,7 +141,7 @@ def payment_success():
     flash("✅ Payment confirmed. You can now create your business.", "success")
     return redirect(url_for('create_business'))
 
-# ----- CREATE BUSINESS -----
+# ---------- CREATE BUSINESS ----------
 @app.route('/create-business', methods=['GET', 'POST'])
 def create_business():
     if 'username' not in session:
@@ -154,6 +149,7 @@ def create_business():
     if 'paid' not in session:
         flash("⚠️ Please complete the payment before creating a business.", "error")
         return redirect(url_for('start_business'))
+
     if request.method == 'POST':
         data = (
             session['username'],
@@ -177,7 +173,7 @@ def create_business():
         return redirect(url_for('thank_you'))
     return render_template('create_business.html')
 
-# ----- SEARCH -----
+# ---------- SEARCH ----------
 @app.route('/search', methods=['GET','POST'])
 def search():
     businesses = []
@@ -205,15 +201,11 @@ def search():
             not_found = True
     return render_template('search.html', businesses=businesses, not_found=not_found)
 
-
-
-
-
-# ----- CONTACT -----
+# ---------- CONTACT ----------
 @app.route('/contact', methods=['GET','POST'])
 def contact():
     business = session.get('latest_business', None)
-    if request.method == 'POST':
+    if request.method == 'POST' and business:
         return redirect(url_for('chat', receiver=business['username']))
     return render_template('contact.html', business=business)
 
@@ -221,7 +213,7 @@ def contact():
 def thank_you():
     return render_template('thank_you.html')
 
-# ----- ADMIN DASHBOARD -----
+# ---------- ADMIN DASHBOARD ----------
 @app.route('/all-businesses')
 def show_all_businesses():
     conn = sqlite3.connect('database.db')
@@ -277,7 +269,7 @@ def my_businesses():
     is_admin = session.get('is_admin', False)
     return render_template('my_businesses.html', businesses=businesses, is_admin=is_admin)
 
-# ----- RUN -----
+# ---------- RUN ----------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
