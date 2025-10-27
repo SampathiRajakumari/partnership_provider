@@ -77,6 +77,15 @@
         .form-container button:hover {
             background-color: #218838;
         }
+
+        /* Error message style */
+        #message {
+            color: #ffcccc;
+            font-size: 14px;
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -91,13 +100,42 @@
 <div class="overlay">
     <div class="form-container">
         <h2>Sign Up</h2>
-        <form method="POST">
+        <form method="POST" onsubmit="return validatePassword()">
             <input type="text" name="username" placeholder="Username" required>
             <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+
+            <p id="message"></p>
+
             <button type="submit">Register</button>
         </form>
     </div>
 </div>
+
+<script>
+function validatePassword() {
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirm_password").value;
+    const message = document.getElementById("message");
+
+    // Regex for strong password
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/;
+
+    if (!regex.test(password)) {
+        message.textContent = "Password must have at least 8 characters, including uppercase, lowercase, number, and special character (@, #, $, %).";
+        return false;
+    }
+
+    if (password !== confirm) {
+        message.textContent = "Passwords do not match!";
+        return false;
+    }
+
+    message.textContent = "";
+    return true;
+}
+</script>
+
 </body>
 </html>

@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 import os
 import razorpay
+import re
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -58,6 +60,12 @@ def init_db():
 
 init_db()
 
+# ---------- PASSWORD VALIDATION ----------
+def is_strong_password(password):
+    """Check if password meets strength requirements."""
+    pattern = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$')
+    return bool(pattern.match(password))
+
 # ---------- ROUTES ----------
 
 @app.route('/')
@@ -65,37 +73,69 @@ def home():
     return render_template('home.html')
 
 # ----- SIGNUP -----
-@app.route('/signup', methods=['GET','POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        confirm_password = request.form.get('confirm_password', '')
+
+        # Password match check
+        if password != confirm_password:
+            flash("❌ Passwords do not match.", "error")
+            return redirect(url_for('signup'))
+
+        # Password strength check
+        if not is_strong_password(password):
+            flash("⚠️ Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.", "error")
+            return redirect(url_for('signup'))
+
+        # Hash the password
+        hashed_password = generate_password_hash(password)
+
         conn = sqlite3.connect('database.db')
         c = conn.cursor()
-        c.execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', (username, email, password))
+
+        # Check if username already exists
+        c.execute('SELECT * FROM users WHERE username = ?', (username,))
+        existing_user = c.fetchone()
+        if existing_user:
+            conn.close()
+            flash("❌ Username already taken. Please choose another.", "error")
+            return redirect(url_for('signup'))
+
+        c.execute('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', (username, email, hashed_password))
         conn.commit()
         conn.close()
+
+        flash("✅ Signup successful! Please log in.", "success")
         return redirect(url_for('login'))
+
     return render_template('signup.html')
 
 # ----- LOGIN -----
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
         conn = sqlite3.connect('database.db')
         c = conn.cursor()
-        c.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+        c.execute('SELECT * FROM users WHERE username = ?', (username,))
         user = c.fetchone()
         conn.close()
-        if user:
+
+        if user and check_password_hash(user[3], password):  # user[3] = password column
             session['username'] = username
             session['is_admin'] = False
+            flash("✅ Login successful!", "success")
             return redirect(url_for('search'))
         else:
-            return render_template('login.html', error="Invalid credentials")
+            flash("❌ Invalid username or password.", "error")
+            return render_template('login.html')
+
     return render_template('login.html')
 
 # ----- ADMIN LOGIN -----
@@ -107,22 +147,24 @@ def admin_login():
         if username == "Rajakumari" and password == "#Rajakumari2004":
             session['username'] = username
             session['is_admin'] = True
-            flash('Welcome, Admin!', 'success')
+            flash('✅ Welcome, Admin!', 'success')
             return redirect(url_for('show_all_businesses'))
         else:
-            flash('Invalid admin credentials', 'error')
+            flash('❌ Invalid admin credentials.', 'error')
     return render_template('admin_login.html')
 
 @app.route('/admin_logout')
 def admin_logout():
     session.pop('username', None)
     session.pop('is_admin', None)
+    flash("You have been logged out.", "info")
     return redirect(url_for('home'))
 
 # ----- LOGOUT -----
 @app.route('/logout')
 def logout():
     session.clear()
+    flash("You have been logged out.", "info")
     return redirect(url_for('home'))
 
 # ---------- PAYMENT FLOW ----------
@@ -174,11 +216,12 @@ def create_business():
         conn.commit()
         conn.close()
         session.pop('paid', None)
+        flash("✅ Business created successfully!", "success")
         return redirect(url_for('thank_you'))
     return render_template('create_business.html')
 
 # ----- SEARCH -----
-@app.route('/search', methods=['GET','POST'])
+@app.route('/search', methods=['GET', 'POST'])
 def search():
     businesses = []
     not_found = False
@@ -205,12 +248,8 @@ def search():
             not_found = True
     return render_template('search.html', businesses=businesses, not_found=not_found)
 
-
-
-
-
 # ----- CONTACT -----
-@app.route('/contact', methods=['GET','POST'])
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
     business = session.get('latest_business', None)
     if request.method == 'POST':
@@ -246,14 +285,14 @@ def confirm_delete(business_id):
         c.execute('SELECT password FROM users WHERE username = ?', (session['username'],))
         row = c.fetchone()
         conn.close()
-        if row and entered_password == row[0]:
+        if row and check_password_hash(row[0], entered_password):
             return redirect(url_for('delete_business', business_id=business_id))
         else:
-            flash("Incorrect password.")
+            flash("❌ Incorrect password.", "error")
             return render_template('confirm_delete.html')
     return render_template('confirm_delete.html')
 
-@app.route('/delete-business/<int:business_id>', methods=['GET','POST'])
+@app.route('/delete-business/<int:business_id>', methods=['GET', 'POST'])
 def delete_business(business_id):
     if 'username' not in session:
         return redirect(url_for('login'))
@@ -265,6 +304,7 @@ def delete_business(business_id):
         c.execute('DELETE FROM businesses WHERE id = ? AND username = ?', (business_id, session['username']))
     conn.commit()
     conn.close()
+    flash("✅ Business deleted successfully.", "success")
     return redirect(url_for('show_all_businesses'))
 
 @app.route('/my_businesses')
