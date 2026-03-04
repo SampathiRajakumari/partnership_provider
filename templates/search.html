@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Search Business</title>
+    <meta charset="UTF-8">
+    <title>Search Business | NexaBiz</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         body {
@@ -12,124 +13,267 @@
             background-position: center;
             background-repeat: no-repeat;
             min-height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             color: #fff;
         }
-        .logo { position: absolute; top: 15px; left: 20px; z-index: 1000; }
-        .logo img { height: 140px; width: auto; }
-        .container {
-            padding: 20px;
-            max-width: 1000px;
-            margin: 100px auto 40px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
+
+        .logo {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            z-index: 1000;
         }
-        h2 { text-align: center; }
-        form { margin-bottom: 20px; text-align: center; }
+
+        .logo img {
+            height: 120px;
+            width: auto;
+        }
+
+        .container {
+            padding: 25px;
+            max-width: 1000px;
+            margin: 120px auto 50px;
+            background: rgba(0, 0, 0, 0.55);
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
         input[type="text"] {
             padding: 10px;
             width: 60%;
             max-width: 400px;
-            margin-right: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            border-radius: 8px;
+            border: none;
+            outline: none;
         }
+
         button {
             padding: 10px 20px;
-            background-color: #007BFF;
+            background-color: #00a8ff;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 10px;
+            transition: 0.3s ease;
         }
-        button:hover { background-color: #0056b3; }
-        .error { color: yellow; text-align: center; font-weight: bold; }
+
+        button:hover {
+            background-color: #0077cc;
+        }
+
+        .error {
+            color: #ffeb3b;
+            text-align: center;
+            font-weight: bold;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
+            margin-top: 25px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0077cc;
             color: white;
         }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background-color: #0056b3; color: white; }
-        tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.05); }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
         .btn {
-            padding: 5px 10px;
+            padding: 6px 12px;
             background: #28a745;
             color: white;
-            border-radius: 5px;
+            border-radius: 6px;
             text-decoration: none;
             display: inline-block;
+            transition: 0.3s;
         }
-        .btn:hover { background: #1e7e34; }
+
+        .btn:hover {
+            background: #1e7e34;
+        }
+
+        /* New sections */
+        .section {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+        }
+
+        .section h3 {
+            color: #00bfff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .idea {
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 0;
+        }
+
+        .idea:last-child {
+            border-bottom: none;
+        }
+
+        .buttons {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .buttons button {
+            background-color: #007bff;
+            margin: 5px;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            input[type="text"] { width: 80%; }
+            .container { margin: 80px 10px; }
+        }
     </style>
 </head>
 <body>
-<div class="logo">
-    <a href="{{ url_for('home') }}">
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
-    </a>
-</div>
+    <div class="logo">
+        <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="NexaBiz Logo">
+        </a>
+    </div>
 
-<div class="container">
-    <h2>Search for Business</h2>
-    
-    <form method="POST">
-        <input type="text" name="business_name" placeholder="Enter Business Name" required>
-        <button type="submit">Search</button>
-    </form>
+    <div class="container">
+        <h2>🔍 Search for Business</h2>
 
-    {% if not_found %}
-        <p class="error">Business not found.</p>
-    {% endif %}
+        <form method="POST">
+            <input type="text" name="business_name" placeholder="Enter Business Name" required>
+            <button type="submit">Search</button>
+        </form>
 
-    <form method="GET" action="{{ url_for('start_business') }}">
-        <button type="submit">Create New Business</button>
-    </form>
+        {% if not_found %}
+            <p class="error">Business not found.</p>
+        {% endif %}
 
-    <form method="GET" action="{{ url_for('show_all_businesses') }}">
-        <button type="submit">Show All Businesses</button>
-    </form>
+        <form method="GET" action="{{ url_for('start_business') }}">
+            <button type="submit">➕ Create New Business</button>
+        </form>
 
-    {% if businesses %}
-    <table class="table table-bordered">
-      <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Business Type</th>
-        <th>Business Name</th>
-        <th>Requirements</th>
-        <th>Position</th>
-        <th>Details</th>
-        <th>Chat</th>
-      </tr>
-      {% for business in businesses %}
-      <tr>
-        <td>{{ business.username }}</td>
-        <td>{{ business.email }}</td>
-        <td>{{ business.phone_number }}</td>
-        <td>{{ business.business_type }}</td>
-        <td>{{ business.business_name }}</td>
-        <td>{{ business.requirements }}</td>
-        <td>{{ business.position }}</td>
-        <td>{{ business.details }}</td>
-        <td>
-          {% if business.username != session['username'] %}
-          <a href="https://wa.me/91{{ business.phone_number }}?text=Hi%20{{ business.username }},%20I%20am%20also%20into%20{{ business.business_type }}.%20Let's%20discuss%20our%20business!" 
-             target="_blank" class="btn">
-             💬 Chat
-          </a>
-          {% else %}
-            -
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% endif %}
-</div>
+        <form method="GET" action="{{ url_for('show_all_businesses') }}">
+            <button type="submit">📋 Show All Businesses</button>
+        </form>
+
+        {% if businesses %}
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Business Type</th>
+                <th>Business Name</th>
+                <th>Requirements</th>
+                <th>Position</th>
+                <th>Details</th>
+                <th>Chat</th>
+            </tr>
+            {% for business in businesses %}
+            <tr>
+                <td>{{ business.username }}</td>
+                <td>{{ business.email }}</td>
+                <td>{{ business.phone_number }}</td>
+                <td>{{ business.business_type }}</td>
+                <td>{{ business.business_name }}</td>
+                <td>{{ business.requirements }}</td>
+                <td>{{ business.position }}</td>
+                <td>{{ business.details }}</td>
+                <td>
+                    {% if business.username != session['username'] %}
+                    <a href="https://wa.me/91{{ business.phone_number }}?text=Hi%20{{ business.username }},%20I%20am%20interested%20in%20your%20business%20({{ business.business_name }})." 
+                       target="_blank" class="btn">
+                        💬 Chat
+                    </a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        <!-- 🌟 Business Idea Showcase -->
+        <div class="section">
+            <h3>🌟 Business Idea Showcase</h3>
+            <p style="text-align:center;">Explore creative business ideas shared by entrepreneurs!</p>
+
+            <div class="idea">
+                <p><b>Eco-Friendly Packaging Startup</b></p>
+                <p>Founder: Rajakumari</p>
+                <p>Description: Sustainable packaging materials for online stores.</p>
+                <div class="buttons">
+                    <button>💬 Chat Now</button>
+                    <button>📞 Call via WhatsApp</button>
+                </div>
+            </div>
+
+            <div class="idea">
+                <p><b>AI Resume Builder</b></p>
+                <p>Founder: Priya</p>
+                <p>Description: Builds professional resumes using AI.</p>
+                <div class="buttons">
+                    <button>💬 Chat Now</button>
+                    <button>📞 Call via WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🤝 Smart Matching System -->
+        <div class="section">
+            <h3>🤝 Smart Matching System</h3>
+            <p style="text-align:center;">
+                AI-based matching recommends business partners based on your
+                <b>interests, investment range, and location.</b> (Coming soon 🚀)
+            </p>
+        </div>
+
+        <!-- 💬 Chat / Call Option -->
+        <div class="section">
+            <h3>💬 Chat / Call Option</h3>
+            <p style="text-align:center;">
+                Directly chat or call entrepreneurs through WhatsApp.  
+                Use “💬 Chat” or “📞 Call” buttons above to connect instantly.
+            </p>
+        </div>
+    </div>
 </body>
 </html>
